@@ -90,19 +90,3 @@
 - Vantagem LLM: Testes mais legíveis e manuteníveis
 
 ---
-
-## Checklist de Coleta
-
-- [x] Compilar projeto (`mvn -q -DskipTests package`)
-- [x] Gerar testes EvoSuite (adaptado para Java 21)
-- [x] Copiar EvoSuite para evosuite/
-- [x] Ativar suíte EvoSuite em src/test/java
-- [ ] Executar JaCoCo (EvoSuite)
-- [ ] Executar PITest (EvoSuite)
-- [ ] Anotar métricas EvoSuite
-- [ ] Limpar src/test/java
-- [ ] Copiar LLM para src/test/java
-- [ ] Executar JaCoCo (LLM)
-- [ ] Executar PITest (LLM)
-- [ ] Anotar métricas LLM
-- [ ] Preencher tabela final

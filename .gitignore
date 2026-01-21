@@ -1,10 +1,11 @@
 # Compiled class files
 *.class
 
-# Package files
-*.jar
+# Package files - exceto EvoSuite para reprodutibilidade
 *.war
 *.ear
+# *.jar - comentado para permitir evosuite-1.0.6.jar
+!tools/evosuite-1.0.6.jar
 
 # Maven
 target/
@@ -41,3 +42,9 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Maven Wrapper (necessário para build)
+!.mvn/wrapper/maven-wrapper.jar
+
+# Maven Wrapper (necessario para build)
+!.mvn/wrapper/maven-wrapper.jar

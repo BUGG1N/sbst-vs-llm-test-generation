@@ -1,102 +1,118 @@
-# Atividade Prática: Comparação SBST vs LLM
+# Comparação SBST (EvoSuite) vs LLM (Copilot/ChatGPT)
 
-Projeto para comparação de geração automática de testes unitários usando:
-- **EvoSuite (SBST)**: Search-Based Software Testing
-- **LLM (Copilot/ChatGPT)**: Geração assistida por IA
+**Disciplina:** Inteligência Artificial na Engenharia de Software  
+**Autor:** Guilherme V. M. Amadeu  
+**Data:** Janeiro 2026
 
-## Estrutura do Projeto
+## Objetivo
+
+Comparar a eficácia e a cobertura de testes gerados por algoritmos evolutivos (SBST) versus IA generativa (LLM).
+
+## Estrutura do Repositório
 
 ```
 atividade-sbst-llm/
-├── src/
-│   ├── main/java/com/atividade/    # Código-fonte alvo
-│   │   └── Calculator.java         # Classe para testar
-│   └── test/java/                  # Suíte ativa (copiar de evosuite/ ou llm/)
-├── evosuite/                       # Suíte gerada pelo EvoSuite
-├── llm/                            # Suíte gerada pelo LLM
-│   └── com/atividade/
-│       └── CalculatorLLMTest.java
-├── tools/                          # JAR do EvoSuite
-├── relatorio/                      # Anotações e métricas
-│   └── metricas.md
-├── pom.xml                         # Configuração Maven
-└── RELATORIO.md                    # Relatório final
+├── src/main/java/com/atividade/
+│   └── Calculator.java              # Classe alvo (20 métodos, 358 linhas)
+├── evosuite/com/atividade/
+│   ├── Calculator_ESTest.java       # Suíte EvoSuite (71 testes)
+│   └── Calculator_ESTest_scaffolding.java
+├── llm/com/atividade/
+│   └── CalculatorLLMTest.java       # Suíte LLM (96 testes)
+├── relatorio/
+│   ├── RELATORIO_FINAL.md           # Relatório completo
+│   ├── metricas.md                  # Métricas detalhadas
+│   └── metricas_multi_run.md        # Resultados de execução
+├── tools/
+│   └── evosuite-1.0.6.jar           # JAR do EvoSuite
+├── pom.xml                          # Configuração Maven (JaCoCo, PITest)
+├── run_multirun.ps1                 # Script de coleta de métricas
+└── README.md                        # Este arquivo
 ```
+
+## Resultados Principais
+
+| Métrica | EvoSuite (SBST) | LLM (Copilot) |
+|---------|-----------------|---------------|
+| Número de Testes | 71 | 96 |
+| Line Coverage | 100% | 100% |
+| Branch Coverage | 100% | 100% |
+| Mutation Score | **91%** | **93%** |
+| Mutantes Mortos | 110/121 | 113/121 |
+
+**Conclusão:** A suíte LLM apresentou mutation score 2% superior, com maior eficácia na detecção de mutantes do tipo `ConditionalsBoundary`.
 
 ## Pré-requisitos
 
-- Java JDK 11+
-- Maven 3.x
-- EvoSuite 1.0.6 (baixar para `tools/`)
+- Java JDK 11+ (testado com Eclipse Adoptium 21.0.8)
+- Maven 3.x (incluso via Maven Wrapper)
 
-## Comandos Principais
+## Como Executar
 
 ### 1. Compilar o projeto
-```bash
-mvn -q -DskipTests package
-```
 
-### 2. Baixar EvoSuite
 ```powershell
-# Windows PowerShell
-New-Item -ItemType Directory -Force tools | Out-Null
-Invoke-WebRequest -Uri "https://github.com/EvoSuite/evosuite/releases/download/v1.0.6/evosuite-1.0.6.jar" -OutFile "tools/evosuite-1.0.6.jar"
+.\mvnw.cmd compile
 ```
 
-### 3. Gerar testes com EvoSuite
-```bash
-java -jar tools/evosuite-1.0.6.jar -class com.atividade.Calculator -projectCP target/classes -criterion branch -seed 1
-```
+### 2. Testar suíte EvoSuite
 
-### 4. Ativar suíte EvoSuite
 ```powershell
-# Windows PowerShell
-Remove-Item -Recurse -Force src\test\java -ErrorAction SilentlyContinue
-New-Item -ItemType Directory -Force src\test\java | Out-Null
-Copy-Item -Recurse -Force evosuite-tests\* src\test\java\
+# Copiar suíte
+Copy-Item "evosuite\com\atividade\Calculator_ESTest.java" -Destination "src\test\java\com\atividade\"
+
+# Executar testes + JaCoCo
+.\mvnw.cmd clean test
+
+# Executar PITest
+.\mvnw.cmd org.pitest:pitest-maven:mutationCoverage
 ```
 
-### 5. Ativar suíte LLM
+### 3. Testar suíte LLM
+
 ```powershell
-# Windows PowerShell
-Remove-Item -Recurse -Force src\test\java -ErrorAction SilentlyContinue
-New-Item -ItemType Directory -Force src\test\java | Out-Null
-Copy-Item -Recurse -Force llm\* src\test\java\
+# Limpar e copiar suíte
+Remove-Item "src\test\java\com\atividade\*.java" -Force -ErrorAction SilentlyContinue
+Copy-Item "llm\com\atividade\CalculatorLLMTest.java" -Destination "src\test\java\com\atividade\"
+
+# Executar testes + JaCoCo
+.\mvnw.cmd clean test
+
+# Executar PITest
+.\mvnw.cmd org.pitest:pitest-maven:mutationCoverage
 ```
 
-### 6. Executar testes + cobertura (JaCoCo)
-```bash
-mvn -q test
+### 4. Script automatizado
+
+```powershell
+.\run_multirun.ps1
 ```
-Relatório: `target/site/jacoco/index.html`
 
-### 7. Executar análise de mutação (PITest)
-```bash
-mvn -q test-compile org.pitest:pitest-maven:mutationCoverage
-```
-Relatório: `target/pit-reports/<timestamp>/index.html`
+## Relatórios Gerados
 
-## Classe Alvo
+- **JaCoCo (Cobertura):** `target/site/jacoco/index.html`
+- **PITest (Mutação):** `target/pit-reports/[timestamp]/index.html`
 
-**FQCN:** `com.atividade.Calculator`
+## Ferramentas Utilizadas
 
-Métodos implementados:
-- Operações básicas: `add`, `subtract`, `multiply`, `divide`, `modulo`
-- Matemáticos: `power`, `factorial`, `abs`, `max`, `min`, `signum`
-- Verificações: `isEven`, `isOdd`, `isPrime`, `isInRange`
-- Utilitários: `gcd`, `lcm`, `average`, `classify`, `clamp`
+| Ferramenta | Versão | Função |
+|------------|--------|--------|
+| EvoSuite | 1.0.6 | Geração SBST (branch coverage) |
+| GitHub Copilot | Claude Opus 4.5 | Geração assistida LLM |
+| JaCoCo | 0.8.12 | Cobertura de código |
+| PITest | 1.17.1 | Teste de mutação |
+| JUnit | 4.13.2 | Framework de testes |
 
-## Entregáveis
+## Documentação
 
-1. ✅ Repositório Git com as duas suítes (`/evosuite` e `/llm`)
-2. ✅ Template de relatório (`RELATORIO.md`)
-3. ⏳ Métricas preenchidas (`relatorio/metricas.md`)
-4. ⏳ Análise crítica final
+O relatório completo está em [relatorio/RELATORIO_FINAL.md](relatorio/RELATORIO_FINAL.md), incluindo:
 
-## Próximos Passos
+- Metodologia detalhada
+- Análise por mutador
+- Ameaças à validade
+- Prompt LLM para reprodutibilidade
+- Plano experimental multi-run
 
-1. Compilar o projeto com `mvn -q -DskipTests package`
-2. Baixar EvoSuite para `tools/`
-3. Gerar testes com EvoSuite e copiar para `evosuite/`
-4. Coletar métricas de cada suíte (JaCoCo + PITest)
-5. Preencher o relatório final
+## Licença
+
+Projeto acadêmico - uso educacional.
