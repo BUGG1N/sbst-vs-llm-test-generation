@@ -43,7 +43,7 @@ Thumbs.db
 # Logs
 *.log
 
-# Maven Wrapper (necessário para build)
+# Maven Wrapper (necessï¿½rio para build)
 !.mvn/wrapper/maven-wrapper.jar
 
 # Maven Wrapper (necessario para build)

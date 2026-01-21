@@ -119,6 +119,7 @@ Ambas atingiram 100% de cobertura, mas a LLM obteve +2% em mutation score, demon
 
 ## Referências
 
-- Repositório: `evosuite/` (71 testes) e `llm/` (96 testes)
+- **Repositório GitHub:** https://github.com/BUGG1N/sbst-vs-llm-test-generation
+- Suítes de teste: `evosuite/` (71 testes) e `llm/` (96 testes)
 - Relatório completo: `relatorio/RELATORIO_FINAL.md`
 - Ambiente: Windows 11, Java 21.0.8, Intel i7-10750H, 24GB RAM
