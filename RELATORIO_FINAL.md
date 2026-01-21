@@ -2,7 +2,7 @@
 
 **Disciplina:** Inteligência Artificial para Engenharia de Software  
 **Data:** Janeiro de 2026  
-**Autor:** [Preencher seu nome]
+**Autor:** Guilherme Amadeu
 
 ---
 
